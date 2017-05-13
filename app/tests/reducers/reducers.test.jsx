@@ -1,10 +1,11 @@
 var expect = require('expect');
-var reducers = require('reducers');
 var df = require('deep-freeze-strict');
+
+var reducers = require('reducers');
 
 describe('Reducers', () => {
   describe('searchTextReducer', () => {
-    it('should get searchText', () => {
+    it('should set searchText', () => {
       var action = {
         type: 'SET_SEARCH_TEXT',
         searchText: 'dog'
@@ -18,7 +19,7 @@ describe('Reducers', () => {
   describe('showCompletedReducer', () => {
     it('should toggle showCompleted', () => {
       var action = {
-        type: 'TOGGLE_SHOW_COMPLETED',
+        type: 'TOGGLE_SHOW_COMPLETED'
       };
       var res = reducers.showCompletedReducer(df(false), df(action));
 
@@ -35,7 +36,7 @@ describe('Reducers', () => {
       var res = reducers.todosReducer(df([]), df(action));
 
       expect(res.length).toEqual(1);
-      expect (res[0].text).toEqual(action.text);
+      expect(res[0].text).toEqual(action.text);
     });
 
     it('should toggle todo', () => {
@@ -54,6 +55,24 @@ describe('Reducers', () => {
 
       expect(res[0].completed).toEqual(false);
       expect(res[0].completedAt).toEqual(undefined);
+    });
+
+    it('should add existing todos', () => {
+      var todos = [{
+        id: '111',
+        text: 'anything',
+        completed: false,
+        completedAt: undefined,
+        createdAt: 33000
+      }];
+      var action = {
+        type: 'ADD_TODOS',
+        todos
+      };
+      var res = reducers.todosReducer(df([]), df(action));
+
+      expect(res.length).toEqual(1);
+      expect(res[0]).toEqual(todos[0]);
     });
   });
 });
